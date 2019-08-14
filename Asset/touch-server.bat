@@ -10,5 +10,5 @@ SET device = 07ea9707
 ::C:\android-sdk\platform-tools\adb.exe -s "%device%"
 
 ::To Restart The Device
-::\android-sdk\platform-tools\adb.exe shell am broadcast -a android.intent.action.BOOT_COMPLETED
+::C:\android-sdk\platform-tools\adb.exe shell am broadcast -a android.intent.action.BOOT_COMPLETED
 
