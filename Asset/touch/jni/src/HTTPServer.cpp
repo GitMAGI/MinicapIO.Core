@@ -15,8 +15,15 @@
 #include "HTTPServer.h"
 
 int main() {
-    android_touch::HTTPServer httpServer("0.0.0.0", 9889);
+    android_touch::Logging::setMode(android_touch::Logging::Mode::Info);
+    
+    android_touch::Logging::debug("Server", "Main Starting ...");    
+    android_touch::HTTPServer httpServer("0.0.0.0", 9889);    
+    android_touch::Logging::debug("Server", "Instance Created!");
+        
     httpServer.run();
+    
+    android_touch::Logging::debug("Server", "Main Completed!");
 }
 
 android_touch::HTTPServer::HTTPServer(const std::string &host, int port) {
@@ -25,7 +32,7 @@ android_touch::HTTPServer::HTTPServer(const std::string &host, int port) {
 }
 
 void android_touch::HTTPServer::run() {
-    Logging::setMode(Logging::Mode::Info);
+    
     auto touchInput = TouchInput::getNewInstance();
 
     if (touchInput == nullptr) {
@@ -36,10 +43,27 @@ void android_touch::HTTPServer::run() {
     Logging::info("Server", "Using input device : " + touchInput->getDevicePath());
 
     mServer.post("/", [&touchInput, this](const httplib::Request& req, httplib::Response& res) {
+        Logging::debug("Server", "Request Method: " + req.method);        
+        for(std::pair<std::string, std::string> header : req.headers){
+            std::string key = header.first;
+            std::string value = header.second;
+            Logging::debug("Server", "Request Header: " + key + " → " + value);
+        }
+        Logging::debug("Server", "Request Body: " + req.body);
         try {
             Json::Value root;
             Json::Reader reader;
             reader.parse(req.body, root, false);
+
+            for (Json::Value &command : root) {
+                Logging::debug("Server", "Deserializing a Request ...");
+                std::vector<std::string> members = command.getMemberNames();
+                for(std::string &member : members){
+                    std::string key = member;
+                    std::string value = command.get(key, Json::stringValue).asString();
+                    Logging::debug("Server", key + ": " + value);
+                }
+            }
 
             for (Json::Value &command : root) {
                 if (command.isMember("type")) {

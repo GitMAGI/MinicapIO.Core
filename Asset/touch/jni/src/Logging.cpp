@@ -54,9 +54,10 @@ void android_touch::Logging::verbose(std::string tag, std::string message) {
 }
 
 void android_touch::Logging::dispatchMessage(std::string message) {
-#ifdef ANDROID
+/*#ifdef ANDROID
     __android_log_print(ANDROID_LOG_DEBUG, "android_touch", "%s", message.c_str());
 #else
     std::cout << "[android_touch] : " << message << std::endl;
-#endif
+#endif*/
+    std::cout << "[android_touch] : " << message << std::endl;
 }

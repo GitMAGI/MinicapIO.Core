@@ -508,8 +508,17 @@ inline bool read_headers(Stream& strm, MultiMap& headers)
 template <typename T>
 bool read_content(Stream& strm, T& x, bool allow_no_content_length)
 {
+    //std::cout << " *** Reading Content *** \n";
+
     auto len = get_header_value_int(x.headers, "Content-Length", 0);
+    if(!len)
+        len = get_header_value_int(x.headers, "content-length", 0);
+
+    //std::cout << " *** Reading Content - Content-Length: " << len << " *** \n";
+
     if (len) {
+        //std::cout << " *** Reading Content - Content Length not Null *** \n";
+
         x.body.assign(len, 0);
         auto r = 0;
         while (r < len){
@@ -520,6 +529,8 @@ bool read_content(Stream& strm, T& x, bool allow_no_content_length)
             r += r_incr;
         }
     } else if (allow_no_content_length) {
+        //std::cout << " *** Reading Content - Content Length Null and No-Content-Legth is allowed *** \n";
+
         for (;;) {
             char byte;
             auto n = strm.read(&byte, 1);
@@ -983,8 +994,16 @@ inline bool Server::dispatch_request(Request& req, Response& res, Handlers& hand
 
 inline void Server::process_request(Stream& strm)
 {
+    //std::cout << " *** Processing Request! *** \n";
+
     Request req;
     Response res;
+
+    std::string body_content = req.body;
+    int body_content_length = req.body.length();
+
+    //std::cout << " *** The Request Body length is: " << body_content_length << " *** \n";
+    //std::cout << " *** The Request Body here is: " << body_content << " *** \n";
 
     if (!read_request_line(strm, req) ||
         !detail::read_headers(strm, req.headers)) {

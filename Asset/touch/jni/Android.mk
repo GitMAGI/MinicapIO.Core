@@ -13,7 +13,8 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := android_touch
+#LOCAL_MODULE := android_touch
+LOCAL_MODULE := touch
 
 LOCAL_SRC_FILES := vendor/libevdev/libevdev.c         \
                    vendor/libevdev/libevdev-names.c   \

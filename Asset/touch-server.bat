@@ -1,10 +1,10 @@
 @echo off
 
 ::Samsung S5
-::SET device = 07ea9707 
+SET device = 07ea9707 
 
 ::OnePlus3T
-SET device = 743580a0
+::SET device = 743580a0
 
 ::C:\android-sdk\tools\android-ndk-r14b\
 ::C:\android-sdk\platform-tools\adb.exe -s "%device%"
@@ -24,5 +24,3 @@ C:\android-sdk\platform-tools\adb.exe -s "%device%" shell /data/local/tmp/touch
 ::C:\android-sdk\platform-tools\adb.exe -s "%device%"  logcat | find "touch"
 
 C:\android-sdk\platform-tools\adb.exe -s "%device%" forward --remove tcp:9889
-
-
