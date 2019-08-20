@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DLL_Core", "DLL_Core\DLL_Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA_Main", "CA_Main\CA_Main.csproj", "{B4EF7478-6784-4128-853F-BF44AA56C6A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "T_Core", "T_Core\T_Core.csproj", "{A12F8096-D617-4182-8C49-53E3751E80FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B4EF7478-6784-4128-853F-BF44AA56C6A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4EF7478-6784-4128-853F-BF44AA56C6A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4EF7478-6784-4128-853F-BF44AA56C6A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A12F8096-D617-4182-8C49-53E3751E80FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A12F8096-D617-4182-8C49-53E3751E80FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A12F8096-D617-4182-8C49-53E3751E80FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A12F8096-D617-4182-8C49-53E3751E80FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
