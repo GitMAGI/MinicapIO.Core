@@ -153,7 +153,7 @@ namespace T_Core
         [TestMethod]
         public void MultipleSynchronousCallOverSocket()
         {
-            int nrOfCalls = 100;
+            int nrOfCalls = 30;
             int nrOfUnsuccessfulCalls = 0;
             string methodName = "MultipleSynchronousCallOverSocket";
             Stopwatch stopwatch = new Stopwatch();

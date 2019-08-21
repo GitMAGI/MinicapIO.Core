@@ -15,10 +15,13 @@ namespace CA_Main
     {
         private Serilog.Core.Logger _logger = Logger.GetInstance();
 
-        public string RemoteIP { get; private set; }
-        public int RemotePort { get; private set; }
+        public string MinicapRemoteIP { get; private set; }
+        public int MinicapRemotePort { get; private set; }
 
-        private Socket _socket;
+        public string TouchRemoteIP { get; private set; }
+        public int TouchRemotePort { get; private set; }
+
+        private Socket _minicapSocket;
         
         public uint RealScreenWidth { get; private set; }
         public uint RealScreenHeight { get; private set; }
@@ -40,20 +43,24 @@ namespace CA_Main
         private ProcessingActivity _processor = null;
         private DisplayingActivity _displayer = null;
         private MonitoringActivity _monitoring = null;
+        private ControllingActivity _controlling = null;
 
         private volatile Stack<byte[]> _inputStack;
         private volatile Stack<Mat> _outputStack;
 
         public MainActivity()
         {
-            RemoteIP = "127.0.0.1";
-            RemotePort = 1717;
+            MinicapRemoteIP = "127.0.0.1";
+            MinicapRemotePort = 1717;
 
             ScalingFactor = 0.4;
 
             MainLoopTimeSleeping = 1;
 
             LimitOutputStack = 2;
+
+            TouchRemoteIP = "127.0.0.1";
+            TouchRemotePort = 9889;
         }
 
         public void Stop()
@@ -71,7 +78,7 @@ namespace CA_Main
             _outputStack = new Stack<Mat>();
 
             Task taskRetriever = new Task(() => {
-                _retriever = new RetrievingActivity(_socket, _inputStack, sleepingTime: 1);
+                _retriever = new RetrievingActivity(_minicapSocket, _inputStack, sleepingTime: 1);
                 _retriever.Run();
             });
             Task taskProcessor = new Task(() => {
@@ -86,21 +93,25 @@ namespace CA_Main
                 _monitoring = new MonitoringActivity(_inputStack, _outputStack, sleepingTime: 1);
                 _monitoring.Run();
             });
+            Task taskControlling = new Task(() => {
+                _controlling = new ControllingActivity(TouchRemoteIP, TouchRemotePort, sleepingTime: 1);
+                _controlling.Run();
+            });
 
             try
             {
                 _logger.Information(string.Format("Main Action Starting  ..."));
 
-                IPAddress remoteAddr = IPAddress.Parse(RemoteIP);
-                IPEndPoint remoteEndPoint = new IPEndPoint(remoteAddr, RemotePort);
-                _socket = new Socket(remoteAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                _logger.Information("Starting TCP Connection to {0}:{1} ...", RemoteIP, RemotePort);
-                _socket.Connect(remoteEndPoint);
-                _logger.Information("TCP Connection to {0}:{1} successfully established!", RemoteIP, RemotePort);
+                IPAddress remoteAddr = IPAddress.Parse(MinicapRemoteIP);
+                IPEndPoint remoteEndPoint = new IPEndPoint(remoteAddr, MinicapRemotePort);
+                _minicapSocket = new Socket(remoteAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                _logger.Information("Starting TCP Connection to {0}:{1} ...", MinicapRemoteIP, MinicapRemotePort);
+                _minicapSocket.Connect(remoteEndPoint);
+                _logger.Information("TCP Connection to {0}:{1} successfully established!", MinicapRemoteIP, MinicapRemotePort);
 
                 byte[] globalHeader = new byte[24];
                 // Retrieve Global Header Informartions
-                _socket.Receive(globalHeader, 24, SocketFlags.None);
+                _minicapSocket.Receive(globalHeader, 24, SocketFlags.None);
 
                 byte version = globalHeader[0]; 
                 byte headerSize = globalHeader[1];
@@ -133,6 +144,9 @@ namespace CA_Main
 
                 //Thread for Monitoring queues status 
                 taskMonitoring.Start();
+
+                //Thread for Controlling 
+                taskControlling.Start();
 
                 //Loop Main Activity until Stop is set
                 _keepRunning = true;
@@ -169,14 +183,20 @@ namespace CA_Main
                     taskMonitoring.Wait();
                 }
 
-                if (_socket != null)
+                if (taskControlling.Status == TaskStatus.Running)
                 {
-                    _logger.Information("Shutting down TCP socket {0}:{1} ..", RemoteIP, RemotePort);
-                    _socket.Shutdown(SocketShutdown.Both);
+                    _controlling.Stop();
+                    taskControlling.Dispose();
+                }
+
+                if (_minicapSocket != null)
+                {
+                    _logger.Information("Shutting down TCP socket {0}:{1} ..", MinicapRemoteIP, MinicapRemotePort);
+                    _minicapSocket.Shutdown(SocketShutdown.Both);
                     _logger.Information("Socket shut down");
 
-                    _logger.Information("Closing TCP socket {0}:{1} ..", RemoteIP, RemotePort);
-                    _socket.Close();
+                    _logger.Information("Closing TCP socket {0}:{1} ..", MinicapRemoteIP, MinicapRemotePort);
+                    _minicapSocket.Close();
                     _logger.Information("Socket closed");
                 }                
 
@@ -192,6 +212,7 @@ namespace CA_Main
             _processor?.Stop();
             _displayer?.Stop();
             _monitoring?.Stop();
+            _controlling?.Stop();
             Stop();
             _logger.Information(string.Format("Cancelling Main Action Execution ..."));
         }
