@@ -142,7 +142,7 @@ namespace CA_Main
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "An Error occurred in a Multithreading Context: {0}", ex.Message);
+                _logger.Error(ex, "An Error occurred in a Multithreading Context: {0}", ex.Message); //It's wrong. Exceptions in a multi-threading env stay in their thread!
                 //throw;
             }
             finally
