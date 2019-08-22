@@ -13,7 +13,6 @@ namespace CA_Main
         private Stack<byte[]> _inputStack;
         private Stack<Mat> _outputStack;
 
-        private int _xCursor;
         private int _yCursor;
 
         private static readonly object _obj = new object();
@@ -38,6 +37,7 @@ namespace CA_Main
                     Console.CursorTop--;
 
                 string line = string.Format("Input Stack Count {0} - Output Stack Count {1}", _inputStack.Count, _outputStack.Count);
+                Console.CursorLeft = 0;
                 Console.WriteLine(line);
                 this._yCursor = Console.CursorTop;
             }

@@ -10,6 +10,13 @@ namespace DLL_Core
 {
     public static class HttpUtils
     {
+        /// <summary>
+        /// Slow Approach. Don't use it!
+        /// </summary>
+        /// <param name="ipPort"></param>
+        /// <param name="json"></param>
+        /// <param name="success"></param>
+        /// <returns></returns>
         public static int JHttpPost(string ipPort, string json, HttpStatusCode success = HttpStatusCode.OK)
         {
             HttpWebResponse response = JHttpRequest(ipPort, "POST", json);
