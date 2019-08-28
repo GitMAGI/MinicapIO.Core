@@ -62,7 +62,7 @@ namespace CA_FakeServer
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = program_fullfileame,
-                    Arguments = string.Join(" ", new List<string>() { "-i", input_fullfilename, "-c:v", "mjpeg", '-q:v', '1', "-f", "image2pipe", "-s", string.Format("{0}x{1}", h, w), "pipe:1" }),
+                    Arguments = string.Join(" ", new List<string>() { "-i", input_fullfilename, "-c:v", "mjpeg", "-q:v", "1", "-f", "image2pipe", "-s", string.Format("{0}x{1}", h, w), "pipe:1" }),
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
