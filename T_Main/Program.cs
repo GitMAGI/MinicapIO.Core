@@ -7,6 +7,8 @@ namespace T_Main
 {
     class Program
     {
+        public static readonly string AppName = "MinicapIO.Core.T_Main";
+
         static void Main(string[] args)
         {
             string methodName = "T_Main";

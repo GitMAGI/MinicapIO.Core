@@ -2,11 +2,11 @@
 using System;
 using System.Diagnostics;
 
-namespace CA_FakeServer
+namespace T_CV
 {
     class Program
     {
-        public static readonly string AppName = "MinicapIO.Core.CA_FakeServer";
+        public static readonly string AppName = "MinicapIO.Core.T_CV";
         private static Serilog.Core.Logger _logger = Logger.GetInstance();
 
         static void Main(string[] args)
@@ -18,9 +18,8 @@ namespace CA_FakeServer
             {
                 _logger.Information(string.Format("Starting Application {0} ...", AppName));
 
-                //MainActivityAsync main = new MainActivityAsync();
-                MainActivity main = new MainActivity();
-                main.Run();
+                CVFirstTest cvTest = new CVFirstTest();
+                cvTest.Run();
             }
             catch (Exception ex)
             {
