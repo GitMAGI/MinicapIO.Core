@@ -15,4 +15,19 @@
     <ProjectReference Include="..\DLL_Core\DLL_Core.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PostBuildEvent>
+      set isX64=FALSE
+      if "%PROCESSOR_ARCHITECTURE%"=="AMD64" set isX64=TRUE
+      if "%PROCESSOR_ARCHITEW6432%"=="AMD64" set isX64=TRUE
+      if "%isX64%"=="TRUE" (
+      echo "Copying x64 dependencies..."
+      xcopy /y "$(SolutionDir)ExternalBin\x64\"
+      ) ELSE (
+      echo "Copying x86 dependencies..."
+      xcopy /y "$(SolutionDir)ExternalBin\x86\"
+      )
+    </PostBuildEvent>
+  </PropertyGroup>
+
 </Project>
